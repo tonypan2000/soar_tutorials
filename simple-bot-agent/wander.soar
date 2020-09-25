@@ -1,0 +1,52 @@
+##Wander Operator Proposal
+# If there is no tank detected on radar, and the sound is silent, and there
+# is no incoming, then propose the wander operator.
+sp {propose*wander*tanksoar
+   (state <s> ^name tanksoar
+              ^io.input-link <in>)
+   (<in> -^radar.tank
+          ^sound silent
+          -^incoming.<dir> yes)
+-->
+   (write |debug: proposing wander|)
+   (<s> ^operator <o> +)
+   (<o> ^name wander)
+}
+
+## Wander: Move Operator Proposal
+# If the wander operator is selected as the superoperator, and tank is not
+# blocked in the forward direction, then propose the move operator.
+sp {wander*propose*move
+   (state <s> ^name wander
+              ^io.input-link.blocked.forward no)
+-->
+   (write |debug: proposing move|)
+   (<s> ^operator <o> + =)
+   (<o> ^name move
+        ^actions.move.direction forward)
+}
+
+sp {wander*propose*turn
+   (state <s> ^name wander
+              ^io.input-link.blocked <b>)
+   (<b> ^forward yes
+        ^{ << left right >> <direction> } no)
+-->
+   (write (crlf) |debug: proposing left | <direction>)
+   (<s> ^operator <o> + =)
+   (<o> ^name turn
+        ^actions.rotate.direction <direction>
+        ^actions.radar-switch on
+        ^actions.radar-power.setting 13)
+}
+
+sp {wander*propose*turn-backward
+   (state <s> ^name wander
+              ^io.input-link.blocked <b>)
+   (<b> ^forward yes ^left yes ^right yes)
+-->
+   (write |debug: proposing turn backward|)
+   (<s> ^operator <o> +)
+   (<o> ^name turn-backward
+        ^actions.rotate.direction left)
+}
