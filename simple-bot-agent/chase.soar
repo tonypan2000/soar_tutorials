@@ -11,7 +11,7 @@ sp {propose*chase*tanksoar
         # ^energy > 200
         # ^missiles > 0
 -->
-   (write |debug: propose chase|)
+   (write |debug: tanksoar propose chase|)
    (<s> ^operator <o> +)
    (<o> ^name chase)
 }
@@ -24,7 +24,7 @@ sp {propose*chase*move
               ^sound-direction forward
               ^io.input-link.blocked.forward no)
 -->
-   (write |debug: propose chase move forward|)
+   (write |debug: chase propose move forward|)
    (<s> ^operator <o> +)
    (<o> ^name move
         ^actions.move.direction forward)
@@ -37,7 +37,7 @@ sp {propose*chase*turn
    (state <s> ^name chase
               ^sound-direction { <direction> << left right >> })
 -->
-   (write (crlf) |debug: propose chase turn to | <direction>)
+   (write (crlf) |debug: chase propose turn to | <direction>)
    (<s> ^operator <o> + =)
    (<o> ^name turn
         ^actions.rotate.direction <direction>)
@@ -46,12 +46,11 @@ sp {propose*chase*turn
 ## Propose Turn Operator Backward
 ## If the state is named chase and the sound is coming from backward, turn left.
 sp {propose*chase*turn-backward
-   (state <s> ^name tanksoar
+   (state <s> ^name chase
               ^sound-direction backward)
 -->
-   (write |debug: propose chase turn backward|)
+   (write |debug: chase propose turn backward|)
    (<s> ^operator <o> +)
    (<o> ^name turn
         ^actions.rotate.direction left)
 }
-

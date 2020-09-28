@@ -17,7 +17,7 @@ sp {elaborate*state*chase*energy*low
 
 # copies the sound to the local state
 sp {elaborate*state*chase*sound
-   (state <s> ^name tanksoar
+   (state <s> ^name chase
               ^io.input-link.sound <sound>)
 -->
    (write (crlf) |debug: elaboration sound direction: | <sound>)
@@ -32,5 +32,5 @@ sp {elaborate*chase*radar-on
    (write |debug: turning on radar elaboration|)
    (<s> ^operator.actions <a>)
    (<a> ^radar-switch on
-        ^radar-power 13)
+        ^radar-power.setting 13)
 }

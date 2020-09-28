@@ -32,7 +32,7 @@ sp {wander*propose*turn
    (<b> ^forward yes
         ^{ << left right >> <direction> } no)
 -->
-   (write (crlf) |debug: proposing left | <direction>)
+   (write (crlf) |debug: proposing turning | <direction>)
    (<s> ^operator <o> + =)
    (<o> ^name turn
         ^actions.rotate.direction <direction>

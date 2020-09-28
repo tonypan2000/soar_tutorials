@@ -8,7 +8,7 @@ sp {propose*wander*tanksoar
           ^sound silent
           -^incoming.<dir> yes)
 -->
-   (write |debug: proposing wander|)
+   (write |debug: tanksoar proposing wander|)
    (<s> ^operator <o> +)
    (<o> ^name wander)
 }
@@ -20,7 +20,7 @@ sp {wander*propose*move
    (state <s> ^name wander
               ^io.input-link.blocked.forward no)
 -->
-   (write |debug: proposing move|)
+   (write |debug: wander proposing move|)
    (<s> ^operator <o> + =)
    (<o> ^name move
         ^actions.move.direction forward)
@@ -32,7 +32,7 @@ sp {wander*propose*turn
    (<b> ^forward yes
         ^{ << left right >> <direction> } no)
 -->
-   (write (crlf) |debug: proposing left | <direction>)
+   (write (crlf) |debug: wander proposing turning | <direction>)
    (<s> ^operator <o> + =)
    (<o> ^name turn
         ^actions.rotate.direction <direction>
@@ -45,7 +45,7 @@ sp {wander*propose*turn-backward
               ^io.input-link.blocked <b>)
    (<b> ^forward yes ^left yes ^right yes)
 -->
-   (write |debug: proposing turn backward|)
+   (write |debug: wander proposing turn backward|)
    (<s> ^operator <o> +)
    (<o> ^name turn-backward
         ^actions.rotate.direction left)

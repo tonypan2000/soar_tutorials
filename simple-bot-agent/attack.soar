@@ -6,7 +6,7 @@ sp {propose*attack*tanksoar
               ^io.input-link.radar.tank
              -^missiles-energy low)
 -->
-   (write |debug: propose attack|)
+   (write |debug: tanksoar propose attack|)
    (<s> ^operator <o> + =)
    (<o> ^name attack)
 }
@@ -77,5 +77,3 @@ sp {propose*turn*attack
    (<a> ^rotate.direction <dir>
         ^fire.weapon missile)
 }
-
-   
