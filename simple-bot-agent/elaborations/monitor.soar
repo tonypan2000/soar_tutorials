@@ -31,6 +31,6 @@ sp {elaborate*chase*radar-on
 -->
    (write |debug: turning on radar elaboration|)
    (<s> ^operator.actions <a>)
-   (<a> ^radar-switch on
+   (<a> ^radar.switch on
         ^radar-power.setting 13)
 }
