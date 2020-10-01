@@ -1,0 +1,73 @@
+##Propose Retreat Operator
+# If the state is tanksoar and the sound sensor is not silent or there is a tank on radar or there is an
+# incoming missile, and health is low or the energy is low, then propose the retreat operator.
+sp {propose*retreat*sound*tanksoar
+    (state <s> ^name tanksoar
+               ^io.input-link.sound <> silent
+               ^health-energy low)
+-->
+    (write |debug: propose retreat because not silent and health low|)
+    (<s> ^operator <o> + =)
+    (<o> ^name retreat)
+}
+
+sp {propose*retreat*radar*tanksoar
+    (state <s> ^name tanksoar
+               ^io.input-link.radar.tank
+               ^health-energy low)
+-->
+    (write |debug: propose retreat because tank on radar and low energy health|)
+    (<s> ^operator <o> + =)
+    (<o> ^name retreat)
+}
+
+sp {propose*retreat*incoming*tanksoar
+    (state <s> ^name tanksoar
+               ^io.input-link.incoming.<dir> yes
+               ^health-energy low)
+-->
+    (write |debug: propose retreat because incoming missile and low energy health|)
+    (<s> ^operator <o> + =)
+    (<o> ^name retreat)
+}
+
+##Propose Retreat Operator
+# If the state is tanksoar and the tank is under attack but cannot not directly sense the other tank, then
+# propose the retreat operator.
+sp {propose*retreat*attacked*tanksoar
+    (state <s> ^name tanksoar
+               ^io.input-link <in>)
+    (<in> ^incoming.<dir> yes
+         -^radar.tank
+          ^sound silent)
+-->
+    (write |debug: propose retreat because incoming but cannot sense|)
+    (<s> ^operator <o> + =)
+    (<o> ^name retreat)
+}
+
+## Propose Move Sidestep Operator
+## If the state is named retreat then propose sidestep from the direction of a detected enemy, as
+## long as that direction is not blocked, is not the direction of another enemy or is a direction to avoid.
+sp {propose*move*side-step*retreat
+    (state <s> ^name retreat
+               ^direction <dir>
+               ^side-direction.<dir> <sd>
+               ^io.input-link.blocked.<sd> not
+              -^avoid-direction <sd>
+              -^direction <sd>)
+--> 
+    (write (crlf) |debug: propose move side step to | <sd>)
+    (<s> ^operator <o> + =)
+    (<o> ^name move
+         ^actions.move.direction <sd>)
+}
+
+## Propose Wait
+## If the state is named retreat then propose wait, and make a worst preference for it.
+sp {propsoe*wait*retreat
+    (state <s> ^name retreat)
+-->
+    (write |debug: propose wait retreat worst preference|)
+    (<s> ^operator wait + <)
+}

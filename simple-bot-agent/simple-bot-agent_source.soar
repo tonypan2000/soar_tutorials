@@ -7,5 +7,6 @@ source elaborations_source.soar
 popd
 source attack.soar
 source chase.soar
+source retreat.soar
 source wander.soar
 source initialize-simple-bot-agent.soar

@@ -1,0 +1,18 @@
+# turn on shields when under attack
+sp {elaborate*attack*shile-on
+    (state <s> ^io.input-link <in>)
+    (<in> ^incoming.<dir> yes
+          ^shield-status off)
+-->
+    (write |debug: under attack turn on sheild elaborate|)
+    (<s> ^operator.actions.shields.switch on)
+}
+
+# turn off the shields if not under attack
+sp {elaborate*not-attacked*shield-off
+    (state <s> -^io.input-link.incoming.<dir> yes
+                ^shield-status on)
+-->
+    (write |debug: not under attack turn off sheild elaborate|)
+    (<s> ^operator.actions.shields.switch off)
+}
