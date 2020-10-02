@@ -87,3 +87,9 @@ sp {wander*apply*record-sound
    (<sound> ^absolute-direction <absolute-sound>
             ^expire-time (+ <clock> 5))
 }
+
+sp {monitor*record-sound
+   (state <s> ^operator.name record-sound)
+-->
+   (write (crlf) |debug: monitor record sound sound sensor direction |)
+}
