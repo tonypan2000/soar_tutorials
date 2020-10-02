@@ -4,10 +4,11 @@
 # chase operator.
 sp {propose*chase*tanksoar
    (state <s> ^name tanksoar
+            #   ^sound
               ^io.input-link <in>
              -^missiles-energy low)
-   (<in> ^sound <> silent
-         -^radar.tank)
+   (<in> -^radar.tank
+        ^sound <> silent)
         # ^energy > 200
         # ^missiles > 0
 -->

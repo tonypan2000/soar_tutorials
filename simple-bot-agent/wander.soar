@@ -3,6 +3,7 @@
 # is no incoming, then propose the wander operator.
 sp {propose*wander*tanksoar
    (state <s> ^name tanksoar
+            #   ^sound
               ^io.input-link <in>)
    (<in> -^radar.tank
           ^sound silent
@@ -36,7 +37,7 @@ sp {wander*propose*turn
    (<s> ^operator <o> + =)
    (<o> ^name turn
         ^actions.rotate.direction <direction>
-        ^actions.radar-switch on
+        ^actions.radar.switch on
         ^actions.radar-power.setting 13)
 }
 
@@ -49,4 +50,40 @@ sp {wander*propose*turn-backward
    (<s> ^operator <o> +)
    (<o> ^name turn-backward
         ^actions.rotate.direction left)
+}
+
+sp {wander*propose*record-sound
+   (state <s> ^name wander
+              ^io.input-link.sound <> silent)
+-->
+   (write |debug: propose record sound when wandering|)
+   (<s> ^operator <o> + > =) 
+   (<o> ^name record-sound)
+}
+
+# sp {wander*apply*record-sound
+#    (state <s> ^operator.name record-sound
+#               ^io.input-link <il>)
+#    (<il> ^sound <direction>
+#          ^clock <clock>)
+# -->
+#    (write (crlf) |debug: wander apply record sound in direction | <direction>)
+#    (<s> ^superstate.sound <sound>)
+#    (<sound> ^direction <direction>
+#             ^expire-time <+ <clock> 5>)
+# }
+
+sp {wander*apply*record-sound
+   (state <s> ^operator.name record-sound
+              ^io.input-link <il>
+              ^superstate <ss>)
+   (<il> ^sound <relative-direction>
+         ^direction <absolute-direction>
+         ^clock <clock>)
+   (<ss> ^direction-map.<absolute-direction>.<relative-direction> <absolute-sound>)
+-->
+   (write (crlf) |debug: wander apply record sound in direction | <absolute-sound>)
+   (<ss> ^sound <sound>)
+   (<sound> ^absolute-direction <absolute-sound>
+            ^expire-time (+ <clock> 5))
 }
