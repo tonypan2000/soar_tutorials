@@ -1,0 +1,92 @@
+# test for either the energy levels being low or no missiles,
+# and create a structure in working memory that can be tested
+sp {elaborate*state*chase*missiles*low
+   (state <s> ^name tanksoar
+              ^io.input-link.missiles 0)
+-->
+   (write |debug: missile low elaboration|)
+   (<s> ^missiles-energy low)
+}
+sp {elaborate*state*chase*energy*low
+   (state <s> ^name tanksoar
+              ^io.input-link.energy <= 200)
+-->
+   (write |debug: energy low elaboration|)
+   (<s> ^missliles-energy low)
+   (<s> ^health-energy low)
+}
+
+# copies the sound to the local state
+sp {elaborate*state*chase*sound
+   (state <s> ^name chase
+              ^io.input-link.sound <sound>)
+-->
+   (write (crlf) |debug: elaboration sound direction: | <sound>)
+   (<s> ^sound-direction <sound>)
+}
+
+# turn on the radar if it is off
+sp {elaborate*chase*radar-on
+   (state <s> ^name chase
+              ^io.input-link.radar-status off)
+-->
+   (write |debug: turning on radar elaboration|)
+   (<s> ^operator.actions <a>)
+   (<a> ^radar.switch on
+        ^radar-power.setting 13)
+}
+
+sp {elaborate*state*retreat*health*low
+   (state <s> ^name tanksoar
+              ^io.input-link.health <= 200)
+-->
+   (write |debug: health low elaboration|)
+   (<s> ^health-energy low)
+}
+
+## Retreat Operator Elaboration
+## If there is a retreat state and there is a sound coming in a given direction, record that direction.
+## If there is a retreat state and there is radar contact with a tank, record forward direction.
+## If there is a retreat state and there is an incoming, record the direction.
+## If there is a retreat state and there is radar contact with a tank that is not in the center, record
+## that direction as a direction to avoid moving.
+sp {elaborate*state*retreat*sound
+   (state <s> ^name retreat
+              ^io.input-link.sound { <> silent <direction> })
+-->
+   (write (crlf) |debug: elaborate reatreat sound direction | <direction>)
+   (<s> ^direction <direction>)
+}
+
+sp {elaborate*state*retreat*radar
+   (state <s> ^name retreat
+              ^io.input-link.radar.tank)
+-->
+   (write (crlf) |debug: elaborate reatreat forward tank |)
+   (<s> ^direction forward)
+}
+
+sp {elaborate*state*retreat*incoming
+   (state <s> ^name retreat
+              ^io.input-link.incoming.<direction> yes)
+-->
+   (write (crlf) |debug: elaborate reatreat incoming missle direction | <direction>)
+   (<s> ^direction <direction>)
+}
+
+sp {elaborate*state*retreat*radar*not-center
+   (state <s> ^name retreat
+              ^io.input-link.radar.tank.position { <> center <direction> })
+-->
+   (write (crlf) |debug: elaborate reatreat radar tank direction | <direction>)
+   (<s> ^avoid-direction <direction>)
+}
+
+sp {elaborate*state*retreat*side-direction
+   (state <s> ^name retreat)
+-->
+   (write |debug: calculate side direction|)
+   (<s> ^side-direction <sd>)
+   (<sd> ^forward right left ^backward right left 
+         ^right forward backward ^left forward backward)
+}

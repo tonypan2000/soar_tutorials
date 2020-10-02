@@ -2,4 +2,5 @@ source _all.soar
 source general-rules.soar
 source monitor.soar
 source shield.soar
+source sound.soar
 source top-state.soar

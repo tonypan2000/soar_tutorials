@@ -3,7 +3,8 @@
 # incoming missile, and health is low or the energy is low, then propose the retreat operator.
 sp {propose*retreat*sound*tanksoar
     (state <s> ^name tanksoar
-               ^io.input-link.sound <> silent
+               ^sound
+            #    ^io.input-link.sound <> silent
                ^health-energy low)
 -->
     (write |debug: propose retreat because not silent and health low|)
