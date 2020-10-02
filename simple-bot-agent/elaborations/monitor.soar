@@ -27,11 +27,12 @@ sp {elaborate*state*chase*sound
 
 # turn on the radar if it is off
 sp {elaborate*chase*radar-on
+   :i-support
    (state <s> ^name chase
+              ^operator.actions <a>
               ^io.input-link.radar-status off)
 -->
    (write |debug: turning on radar elaboration|)
-   (<s> ^operator.actions <a>)
    (<a> ^radar.switch on
         ^radar-power.setting 13)
 }

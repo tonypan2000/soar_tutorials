@@ -6,7 +6,7 @@ sp {propose*wander*tanksoar
               ^io.input-link <in>)
    (<in> -^radar.tank
           ^sound silent
-          -^incoming.<dir> yes)
+         -^incoming.<dir> yes)
 -->
    (write |debug: tanksoar proposing wander|)
    (<s> ^operator <o> +)
@@ -30,7 +30,7 @@ sp {wander*propose*turn
    (state <s> ^name wander
               ^io.input-link.blocked <b>)
    (<b> ^forward yes
-        ^{ << left right >> <direction> } no)
+        ^ { << left right >> <direction> } no)
 -->
    (write (crlf) |debug: wander proposing turning | <direction>)
    (<s> ^operator <o> + =)
@@ -40,6 +40,21 @@ sp {wander*propose*turn
         ^actions.radar-power.setting 13)
 }
 
+sp {wander*elaborate*move*radar-off
+   :i-support
+   (state <s> ^name wander
+              ^operator <o>
+              ^io.input-link <il>)
+   (<il> ^radar-status on
+         ^radar <r>)
+   (<o> ^name move
+        ^actions <a>)
+  -(<r> ^ << energy health missiles tank >> <x>)
+-->
+   (write |debug: turn off radar because wander moving and there is nothing on radar|)
+   (<a> ^radar.switch off)
+}
+
 sp {wander*propose*turn-backward
    (state <s> ^name wander
               ^io.input-link.blocked <b>)
@@ -47,6 +62,6 @@ sp {wander*propose*turn-backward
 -->
    (write |debug: wander proposing turn backward|)
    (<s> ^operator <o> +)
-   (<o> ^name turn-backward
+   (<o> ^name turn
         ^actions.rotate.direction left)
 }

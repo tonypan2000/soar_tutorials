@@ -38,23 +38,9 @@ sp {propose*chase*turn
               ^sound-direction { <direction> << left right >> })
 -->
    (write (crlf) |debug: chase propose turn to | <direction>)
-   (<s> ^operator <o> + =, >)
-   (<o> ^name turn
-        ^actions.rotate.direction <direction>)
-}
-
-## forward is blocked
-sp {propose*chase*turn*blocked
-   (state <s> ^name chase
-              ^sound-direction forward
-              ^io.input-link.bloked <b>)
-   (<b> ^forward yes
-        ^ { <dir> << left right >> } no)
--->
-   (write (crlf) |debug: chase front blocked propose turn to | <dir>)
    (<s> ^operator <o> + =)
    (<o> ^name turn
-        ^actions.rotate.direction <dir>)
+        ^actions.rotate.direction <direction>)
 }
 
 ## Propose Turn Operator Backward
@@ -64,7 +50,23 @@ sp {propose*chase*turn-backward
               ^sound-direction backward)
 -->
    (write |debug: chase propose turn backward|)
-   (<s> ^operator <o> + =)
+   (<s> ^operator <o> +)
    (<o> ^name turn
         ^actions.rotate.direction left)
+}
+
+## propose radar operator if sound is forward
+# and forward is blockd, also fire a missle
+sp {propose*chase*radar*missiles
+   (state <s> ^name chase
+              ^sound-direction forward
+              ^io.input-link.blocked.forward yes)
+-->
+   (write |debug: propose radar and fire missile because sound forward but blocked|)
+   (<s> ^operator <o> +)
+   (<o> ^name radar
+        ^actions <a>)
+   (<a> ^radar.switch on
+        ^radar-power.setting 1
+        ^fire.weapon missile)
 }
