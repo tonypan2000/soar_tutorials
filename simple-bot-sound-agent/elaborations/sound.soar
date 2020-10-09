@@ -23,14 +23,25 @@ sp {elaborate*chase*state*sound-direction
     (<s> ^sound-direction <rel-dir>)
 }
 
-# sp {all*propose*remove-sound
-#     (state <s> ^name << wander chase retreat attack >>
-#                ^superstate.sound.expire-time <clock>
-#                ^io.input-link.clock > <clock>)
-# -->
-#     (<s> ^operator <o> + =, >)
-#     (<o> ^name remove-sound)
-# }
+sp {elaborate*retreat*sound-direction
+    (state <s> ^name retreat
+               ^superstate <ss>)
+    (<ss> ^sound.absolute-direction <abs-dir>
+          ^direction-map.<direction>.<rel-dir> <abs-dir>
+          ^io.input-link.direction <direction>)
+-->
+    (write (crlf) |debug: elaborate chase relative sound direction | <rel-dir>)
+    (<s> ^direction <rel-dir>)
+}
+
+sp {all*propose*remove-sound
+    (state <s> ^name << wander chase retreat attack >>
+               ^superstate.sound.expire-time <clock>
+               ^io.input-link.clock > <clock>)
+-->
+    (<s> ^operator <o> + =, >)
+    (<o> ^name remove-sound)
+}
 
 sp {all*apply*remove-sound
     (state <s> ^operator.name remove-sound
@@ -41,8 +52,8 @@ sp {all*apply*remove-sound
     (<ss> ^sound <sd> -)
 }
 
-sp {all*propose*remove-sound
-    (state <s> ^name << wander chase retreat attack >>
+sp {all*propose*remove-sound*changed-direction
+    (state <s> ^name << wander chase retreat >>
                ^superstate <ss>
                ^io.input-link <il>)
     (<ss> ^sound.absolute-direction <abs-sound>

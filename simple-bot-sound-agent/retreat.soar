@@ -37,10 +37,11 @@ sp {propose*retreat*incoming*tanksoar
 # propose the retreat operator.
 sp {propose*retreat*attacked*tanksoar
     (state <s> ^name tanksoar
-               ^io.input-link <in>)
+               ^io.input-link <in>
+              -^sound)
     (<in> ^incoming.<dir> yes
-         -^radar.tank
-          ^sound silent)
+         -^radar.tank)
+        # ^sound silent)
 -->
     (write |debug: propose retreat because incoming but cannot sense|)
     (<s> ^operator <o> + =)
@@ -54,7 +55,7 @@ sp {propose*move*side-step*retreat
     (state <s> ^name retreat
                ^direction <dir>
                ^side-direction.<dir> <sd>
-               ^io.input-link.blocked.<sd> not
+               ^io.input-link.blocked.<sd> no
               -^avoid-direction <sd>
               -^direction <sd>)
 --> 
@@ -67,8 +68,10 @@ sp {propose*move*side-step*retreat
 ## Propose Wait
 ## If the state is named retreat then propose wait, and make a worst preference for it.
 sp {propsoe*wait*retreat
-    (state <s> ^name retreat)
+    (state <s> ^name retreat
+              -^operator.name wait)
 -->
     (write |debug: propose wait retreat worst preference|)
-    (<s> ^operator wait + <)
+    (<s> ^operator <o> + <)
+    (<o> ^name wait)
 }

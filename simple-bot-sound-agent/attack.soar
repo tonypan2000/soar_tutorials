@@ -20,7 +20,7 @@ sp {propose*fire-missile*attack
          ^missiles > 0)
 -->
    (write |debug: propose fire missile center|)
-   (<s> ^operator <o> + >)
+   (<s> ^operator <o> + =)
    (<o> ^name fire-missile
         ^actions.fire.weapon missile)
 }

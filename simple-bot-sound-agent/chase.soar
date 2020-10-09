@@ -8,7 +8,7 @@ sp {propose*chase*tanksoar
               ^io.input-link <in>
              -^missiles-energy low)
    (<in> -^radar.tank)
-      #   ^sound <> silent)
+        # ^sound <> silent)
         # ^energy > 200
         # ^missiles > 0
 -->

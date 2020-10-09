@@ -7,7 +7,7 @@ sp {propose*wander*tanksoar
               ^io.input-link <in>)
    (<in> -^radar.tank
          #  ^sound silent
-          -^incoming.<dir> yes)
+         -^incoming.<dir> yes)
 -->
    (write |debug: tanksoar proposing wander|)
    (<s> ^operator <o> +)
@@ -48,7 +48,7 @@ sp {wander*propose*turn-backward
 -->
    (write |debug: wander proposing turn backward|)
    (<s> ^operator <o> +)
-   (<o> ^name turn-backward
+   (<o> ^name turn
         ^actions.rotate.direction left)
 }
 
@@ -86,10 +86,4 @@ sp {wander*apply*record-sound
    (<ss> ^sound <sound>)
    (<sound> ^absolute-direction <absolute-sound>
             ^expire-time (+ <clock> 5))
-}
-
-sp {monitor*record-sound
-   (state <s> ^operator.name record-sound)
--->
-   (write (crlf) |debug: monitor record sound sound sensor direction |)
 }

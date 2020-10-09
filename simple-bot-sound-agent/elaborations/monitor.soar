@@ -12,26 +12,26 @@ sp {elaborate*state*chase*energy*low
               ^io.input-link.energy <= 200)
 -->
    (write |debug: energy low elaboration|)
-   (<s> ^missliles-energy low)
-   (<s> ^health-energy low)
+   (<s> ^missiles-energy low
+        ^health-energy low)
 }
 
 # copies the sound to the local state
-sp {elaborate*state*chase*sound
-   (state <s> ^name chase
-              ^io.input-link.sound <sound>)
--->
-   (write (crlf) |debug: elaboration sound direction: | <sound>)
-   (<s> ^sound-direction <sound>)
-}
+# sp {elaborate*state*chase*sound
+#    (state <s> ^name chase
+#               ^io.input-link.sound <sound>)
+# -->
+#    (write (crlf) |debug: elaboration sound direction: | <sound>)
+#    (<s> ^sound-direction <sound>)
+# }
 
 # turn on the radar if it is off
 sp {elaborate*chase*radar-on
    (state <s> ^name chase
+              ^operator.actions <a>
               ^io.input-link.radar-status off)
 -->
    (write |debug: turning on radar elaboration|)
-   (<s> ^operator.actions <a>)
    (<a> ^radar.switch on
         ^radar-power.setting 13)
 }
