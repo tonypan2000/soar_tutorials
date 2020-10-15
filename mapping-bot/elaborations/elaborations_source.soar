@@ -1,4 +1,5 @@
 source _all.soar
+source map.soar
 source monitor.soar
 source output.soar
 source shields.soar

@@ -13,6 +13,7 @@ source chase.soar
 pushd chase
 source chase_source.soar
 popd
+source init-map.soar
 source retreat.soar
 pushd retreat
 source retreat_source.soar
