@@ -1,0 +1,25 @@
+# if cozmo sees a cube, go pick it up
+sp {propose-pickup
+    (state <s> ^name pickup-cube
+               ^io.input-link.object <obj>
+               ^io.output-link <ol>)
+    (<obj> ^type led-cube
+           ^object-id <id>)
+-->
+    (write |debug: propose pick up object|)
+    (<s> ^operator <o> +)
+    (<o> ^name pick-up-object
+         ^actions.pick-up-object <a>)
+    (<a> ^object-id <id>)
+}
+
+# if cozmo does not see a cube turn in place
+# TODO: what if the object it sees is not a cube?
+sp {propose-turn-in-place
+    (state <s> ^name pickup-cube
+              -^io.input-link.object <obj>)
+-->
+    (write |debug: propose turn in place|)
+    (<s> ^operator <o> +)
+    (<o> ^name turn-in-place)
+}

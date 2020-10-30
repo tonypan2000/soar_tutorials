@@ -1,0 +1,20 @@
+sp {propose*initialize-pickup-cube
+   (state <s> ^superstate nil
+             -^name)
+-->
+   (write |debug: propose initialize|)
+   (<s> ^operator <o> +)
+   (<o> ^name initialize-pickup-cube
+        ^actions.move-lift <ml>
+        ^actions.move-head <mh>)
+   (<ml> ^height 0.0)
+   (<mh> ^angle 0.0)
+}
+
+sp {apply*initialize-pickup-cube
+   (state <s> ^operator <op>)
+   (<op> ^name initialize-pickup-cube)
+-->
+   (write |debug: apply initialize|)
+   (<s> ^name pickup-cube)
+}
