@@ -1,0 +1,23 @@
+sp {propose*initialize-bring-cube-home
+   (state <s> ^superstate nil
+             -^name)
+-->
+   (write |debug: propose initialize|)
+   (<s> ^operator <o> +)
+   (<o> ^name initialize-bring-cube-home
+        ^actions.move-lift <ml>
+        ^actions.move-head <mh>)
+   (<ml> ^height 0.0)
+   (<mh> ^angle 0.0)
+}
+
+# remember starting location, should be <0, 0, 0>
+sp {apply*initialize-pickup-cube
+   (state <s> ^operator <op>
+              ^io.input-link.pose <p>)
+   (<op> ^name initialize-bring-cube-home)
+-->
+   (write |debug: apply initialize|)
+   (<s> ^name bring-cube-home
+        ^starting-location <p>)
+}

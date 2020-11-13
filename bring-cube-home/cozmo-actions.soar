@@ -1,0 +1,10 @@
+# turn in place
+sp {apply-turn-in-place
+    (state <s> ^operator.name turn-in-place
+               ^io.output-link <ol>)
+-->
+    (write |debug: apply turn in place|)
+    (<ol> ^turn-in-place <a>)
+    (<a> ^angle 90
+         ^speed 45)
+}

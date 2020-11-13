@@ -1,0 +1,13 @@
+source _firstload.soar
+pushd all
+source all_source.soar
+popd
+pushd elaborations
+source elaborations_source.soar
+popd
+source pickup-cube.soar
+source cozmo-actions.soar
+source general-action-elabs.soar
+source initialize-bring-cube-home.soar
+source go-home.soar
+source wait.soar

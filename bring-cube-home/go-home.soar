@@ -1,0 +1,18 @@
+# if cozmo is holding a block, propose go home
+sp {propose-drive-home
+    (state <s> ^name bring-cube-home
+               ^io.input-link.carrying-block 1
+               ^io.input-link.pose )
+-->
+    (write |debug: propose go home|)
+    (<s> ^operator <o> +)
+    (<o> ^name put-down-cube
+         ^actions.place-object-down <a>)
+    (<a> ^filler 0)
+}
+
+# apply go home by driving back to starting pose and put down block
+sp {
+
+
+}
