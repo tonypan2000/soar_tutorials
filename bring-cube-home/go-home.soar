@@ -1,18 +1,48 @@
 # if cozmo is holding a block, propose go home
 sp {propose-drive-home
     (state <s> ^name bring-cube-home
-               ^io.input-link.carrying-block 1
-               ^io.input-link.pose )
+               ^io.input-link.carrying-block 1)
 -->
     (write |debug: propose go home|)
     (<s> ^operator <o> +)
-    (<o> ^name put-down-cube
-         ^actions.place-object-down <a>)
-    (<a> ^filler 0)
+    (<o> ^name go-home-turn)
 }
 
 # apply go home by driving back to starting pose and put down block
-sp {
+sp {apply-go-home-turn
+    (state <s> ^name go-home-turn
+               ^superstate.heading <h>
+               ^superstate.io.output-link <ol>)
+-->
+    (write (crlf) |debug: apply turning towards home, heading | <h>)
+    (<ol> ^turn-in-place <a>)
+    (<a> ^angle <h>
+         ^speed 20)
+    (<s> ^operator <o> +)
+    (<o> ^name drive-home)
 
+}
 
+# apply drive to starting pose
+sp {apply-drive-home
+    (state <s> ^name drive-home
+               ^superstate.range <r>
+               ^superstate.io.ouput-link <ol>)
+-->
+    (write (crlf) |debug: apply driving towards home, range | <r>)
+    (<ol> ^drive-forward <a>)
+    (<a> ^distance <dist>
+         ^speed 10)
+    (<s> ^operator <o> +)
+    (<o> ^name drop-block)
+}
+
+# apply put down block at origin
+sp {apply-drop-block
+    (state <s> ^name drop-block
+               ^superstate.io.output-link <ol>)
+--> 
+    (write |debug: apply drop block|)
+    (<ol> ^place-object.down <a>)
+    (<a> ^filler 0)
 }

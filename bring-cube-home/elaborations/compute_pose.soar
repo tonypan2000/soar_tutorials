@@ -1,0 +1,16 @@
+# elaboration that computes heading of range compared to origin
+sp {elab-compute-pose
+    (state <s> ^name bring-cube-home
+               ^io.input-link.pose <p>
+               ^starting-location <op>)
+    (<op> ^x <o-x>
+          ^y <o-y>)
+    (<p> ^x <x>
+         ^y <y>)
+-->
+    (write |debug: computing heading and range| <x> <y>)
+    (<s> ^heading (compute-heading <x> <y> <o-x> <o-y>)
+         ^range (compute-range <x> <y> <o-x> <o-y>))
+    # (write |heading | <s>.heading)
+    # (write |heading | <s>.range)
+}
