@@ -1,10 +1,39 @@
-# turn in place
-sp {apply-turn-in-place
-    (state <s> ^operator.name turn-in-place
-               ^io.output-link <ol>)
+# init turn counter
+sp {propose-init-turn
+    (state <s> ^name search-cube
+              -^turn-count)
 -->
-    (write |debug: apply turn in place|)
-    (<ol> ^turn-in-place <a>)
-    (<a> ^angle 90
-         ^speed 45)
+    (write |debug: propose init turn count|)
+    (<s> ^operator <o> + =, <)
+    (<o> ^name init-turn)
+}
+
+sp {apply-init-turn
+    (state <s> ^operator.name init-turn)
+-->
+    (write |debug: apply init turn|)
+    (<s> ^turn-count 0)
+}
+
+# turn in place
+sp {propose-turn-in-place
+    (state <s> ^name search-cube
+              -^turned <tc>
+               ^turn-count { < 4 <tc>})
+-->
+    (write |debug: propose turn in place|)
+    (<s> ^operator <o> + =)
+    (<o> ^name turn-search
+         ^actions <a>)
+    (<a> ^turn-in-place <t>)
+    (<t> ^angle 90
+         ^speed 30)
+}
+
+sp {apply-turn-in-place
+    (state <s> ^operator.name turn-search
+               ^io.input-link.turn-in-place.status complete
+               ^turn-count <tc>)
+-->
+    (<s> ^turned <tc>)
 }

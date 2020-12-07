@@ -1,0 +1,31 @@
+sp {search-cube*propose*turn
+    (state <s> ^name search-cube
+               ^turned <tc>
+               ^turn-count { < 4 <tc> } )
+-->
+    (write (crlf) |debug: propose turn turned times: | <tc>)
+    (<s> ^operator <o> + >)
+    (<o> ^name add-turn-counter
+         ^turned <tc>)
+}
+
+sp {search-cube*compare*add-turn-counter
+    (state <s> ^name search-cube
+               ^operator <op1> +
+                         <op2> +)
+    (<op1> ^name add-turn-counter)
+    (<op2> ^name turn)
+-->
+    (<s> ^operator <op1> > <op2>)
+}
+
+sp {apply*add-turn-counter
+    (state <s> ^operator.name add-turn-counter
+               ^turn-count <tc>
+               ^turned <tc>)
+-->
+    (<s> ^turn-count <tc> -
+                     (+ <tc> 1)
+         ^turned <tc> -)
+    (write |debug: increment turn-count, current count: | <tc>)
+}

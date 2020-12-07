@@ -10,4 +10,5 @@ source cozmo-actions.soar
 source general-action-elabs.soar
 source initialize-bring-cube-home.soar
 source go-home.soar
+source turn-counter.soar
 source wait.soar

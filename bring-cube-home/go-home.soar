@@ -10,39 +10,68 @@ sp {propose-drive-home
 
 # apply go home by driving back to starting pose and put down block
 sp {apply-go-home-turn
-    (state <s> ^name go-home-turn
-               ^superstate.heading <h>
-               ^superstate.io.output-link <ol>)
+    (state <s> ^operator.name go-home-turn
+               ^heading <h>
+               ^io.output-link <ol>)
+    (<ol> -^turn-in-place)
 -->
     (write (crlf) |debug: apply turning towards home, heading | <h>)
-    (<ol> ^turn-in-place <a>)
-    (<a> ^angle <h>
-         ^speed 20)
+    (<s> ^operator <o> +)
+    (<o> ^name turn-home
+         ^actions <act>)
+    (<act> ^turn-in-place <t>)
+    (<t> ^angle <h>
+         ^speed 30)
+}
+
+sp {propose-drive-home
+    (state <s> ^operator.name go-home-turn
+               ^io.output-link.turn-in-place.status complete)
+-->
+    (write (crlf) |debug: propose driving towards home|)
     (<s> ^operator <o> +)
     (<o> ^name drive-home)
-
 }
 
 # apply drive to starting pose
 sp {apply-drive-home
-    (state <s> ^name drive-home
-               ^superstate.range <r>
-               ^superstate.io.ouput-link <ol>)
+    (state <s> ^operator.name drive-home
+               ^range <r>
+               ^io.ouput-link <ol>)
+    (<ol> -^drive-forward
+           ^turn-in-place.status complete)
 -->
     (write (crlf) |debug: apply driving towards home, range | <r>)
-    (<ol> ^drive-forward <a>)
-    (<a> ^distance <dist>
+    (<s> ^operator <o> +)
+    (<o> ^name drive
+         ^actions <act>)
+    (<act> ^drive-forward <d>)
+    (<d> ^distance <dist>
          ^speed 10)
+    (<s> ^operator <o> +)
+    (<o> ^name drop-block)
+}
+
+sp {propose-drop-block
+    (state <s> ^operator.name drive-home
+               ^io.output-link.drive-forward.status complete)
+-->
+    (write (crlf) |debug: propose drop block|)
     (<s> ^operator <o> +)
     (<o> ^name drop-block)
 }
 
 # apply put down block at origin
 sp {apply-drop-block
-    (state <s> ^name drop-block
-               ^superstate.io.output-link <ol>)
+    (state <s> ^operator.name drop-block
+               ^io.output-link <ol>)
+    (<ol> -^place-object
+           ^drive-forward.status complete))
 --> 
     (write |debug: apply drop block|)
-    (<ol> ^place-object.down <a>)
-    (<a> ^filler 0)
+    (<s> ^operator <o> +)
+    (<o> ^name drop
+         ^actions <act>)
+    (<act> ^place-object.down <d>)
+    (<d> ^filler 0)
 }
