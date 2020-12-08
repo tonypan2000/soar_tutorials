@@ -15,9 +15,14 @@ sp {propose*initialize-bring-cube-home
 sp {apply*initialize-pickup-cube
    (state <s> ^operator <op>
               ^io.input-link.pose <p>)
+   # pose is a pointer to <p>
+   (<p> ^x <p-x>
+        ^y <p-y>)
    (<op> ^name initialize-bring-cube-home)
 -->
    (write |debug: apply initialize|)
    (<s> ^name bring-cube-home
-        ^starting-location <p>)
+        ^starting-location <p2>)
+   (<p2> ^x <p-x>
+        ^y <p-y>)
 }

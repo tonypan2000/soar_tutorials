@@ -1,19 +1,22 @@
 # if cozmo is holding a block, propose go home
-sp {propose-drive-home
+sp {propose-go-home-turn
     (state <s> ^name bring-cube-home
                ^io.input-link.carrying-block 1)
 -->
     (write |debug: propose go home|)
     (<s> ^operator <o> +)
-    (<o> ^name go-home-turn)
+    (<o> ^name go-home)
 }
 
 # apply go home by driving back to starting pose and put down block
-sp {apply-go-home-turn
-    (state <s> ^operator.name go-home-turn
-               ^heading <h>
-               ^io.output-link <ol>)
-    (<ol> -^turn-in-place)
+sp {propose-turn-home
+    (state <s> ^name go-home
+    # rule refires every time heading changes
+               ^superstate.heading <h>
+               ^superstate.io.output-link <ol>
+              -^superstate.heading { > -5 < 5 } )
+    # TODO: test angle instead of turn-in-place on ol to see if need to turn
+    # (<ol> -^turn-in-place)
 -->
     (write (crlf) |debug: apply turning towards home, heading | <h>)
     (<s> ^operator <o> +)
@@ -24,9 +27,14 @@ sp {apply-go-home-turn
          ^speed 30)
 }
 
+# Test if turning is in the right direction +- 5 degrees
+
+
 sp {propose-drive-home
-    (state <s> ^operator.name go-home-turn
-               ^io.output-link.turn-in-place.status complete)
+    (state <s> ^name go-home
+    # check heading 
+               ^superstate.heading { > -5 < 5 })
+            #    ^superstate.io.output-link.turn-in-place.status complete)
 -->
     (write (crlf) |debug: propose driving towards home|)
     (<s> ^operator <o> +)
@@ -35,43 +43,47 @@ sp {propose-drive-home
 
 # apply drive to starting pose
 sp {apply-drive-home
-    (state <s> ^operator.name drive-home
-               ^range <r>
-               ^io.ouput-link <ol>)
-    (<ol> -^drive-forward
-           ^turn-in-place.status complete)
+    (state <s> ^name drive-home
+               ^superstate.range <r>
+               ^superstate.io.ouput-link <ol>
+              -^superstate.range < 55)
+    # (<ol> -^drive-forward
+    #        ^turn-in-place.status complete)
 -->
     (write (crlf) |debug: apply driving towards home, range | <r>)
     (<s> ^operator <o> +)
     (<o> ^name drive
          ^actions <act>)
     (<act> ^drive-forward <d>)
-    (<d> ^distance <dist>
+    (<d> ^distance ( - <r> 55) 
          ^speed 10)
-    (<s> ^operator <o> +)
-    (<o> ^name drop-block)
 }
 
 sp {propose-drop-block
-    (state <s> ^operator.name drive-home
-               ^io.output-link.drive-forward.status complete)
+    (state <s> ^operator.name go-home
+               ^superstate.heading { > -5 < 5 }
+               ^superstate.range < 55)
+            #    ^io.output-link.drive-forward.status complete)
 -->
-    (write (crlf) |debug: propose drop block|)
+    (write (crlf) |debug: propose drop block action|)
     (<s> ^operator <o> +)
-    (<o> ^name drop-block)
-}
-
-# apply put down block at origin
-sp {apply-drop-block
-    (state <s> ^operator.name drop-block
-               ^io.output-link <ol>)
-    (<ol> -^place-object
-           ^drive-forward.status complete))
---> 
-    (write |debug: apply drop block|)
-    (<s> ^operator <o> +)
-    (<o> ^name drop
+    (<o> ^name drop-block
          ^actions <act>)
     (<act> ^place-object.down <d>)
     (<d> ^filler 0)
 }
+
+# apply put down block at origin
+# sp {apply-drop-block
+#     (state <s> ^operator.name drop-block
+#                ^io.output-link <ol>)
+#     (<ol> -^place-object
+#            ^drive-forward.status complete))
+# --> 
+#     (write |debug: apply drop block|)
+#     (<s> ^operator <o> +)
+#     (<o> ^name drop
+#          ^actions <act>)
+#     (<act> ^place-object.down <d>)
+#     (<d> ^filler 0)
+# }

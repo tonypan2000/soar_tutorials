@@ -4,10 +4,13 @@ sp {apply*operator*create-action-command
              -^io.output-link.<old-act>.status running)
    (<o> ^actions <act>)
    (<act> ^<att> <value>)
-   (<value> ^<att2> <value2>)
+   # (<value> ^<att2> <value2>)
 -->
-   (<out> ^<att> <value3>)
-   (<value3> ^<att2> <value2>)}
+   # want copy of pointer to structure instead of values
+   # (<out> ^<att> <value3>)
+   # (<value3> ^<att2> <value2>)
+   (<out> ^<att> <value>)
+}
 
 sp {apply*operator*remove-command
    (state <s> ^operator.actions
