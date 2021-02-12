@@ -13,7 +13,6 @@ sp {propose-turn-home
     (state <s> ^name go-home
     # rule refires every time heading changes
                ^superstate.heading <h>
-               ^superstate.io.output-link <ol>
               -^superstate.heading { > -5 < 5 } )
     # TODO: test angle instead of turn-in-place on ol to see if need to turn
     # (<ol> -^turn-in-place)
@@ -24,7 +23,7 @@ sp {propose-turn-home
          ^actions <act>)
     (<act> ^turn-in-place <t>)
     (<t> ^angle <h>
-         ^speed 30)
+         ^speed 45)
 }
 
 # Test if turning is in the right direction +- 5 degrees
@@ -33,31 +32,36 @@ sp {propose-turn-home
 sp {propose-drive-home
     (state <s> ^name go-home
     # check heading 
-               ^superstate.heading { > -5 < 5 })
+               ^superstate.heading { > -5 < 5 }
+               ^superstate.range <r>)
             #    ^superstate.io.output-link.turn-in-place.status complete)
 -->
     (write (crlf) |debug: propose driving towards home|)
-    (<s> ^operator <o> +)
-    (<o> ^name drive-home)
-}
-
-# apply drive to starting pose
-sp {apply-drive-home
-    (state <s> ^name drive-home
-               ^superstate.range <r>
-               ^superstate.io.ouput-link <ol>
-              -^superstate.range < 55)
-    # (<ol> -^drive-forward
-    #        ^turn-in-place.status complete)
--->
-    (write (crlf) |debug: apply driving towards home, range | <r>)
     (<s> ^operator <o> +)
     (<o> ^name drive
          ^actions <act>)
     (<act> ^drive-forward <d>)
     (<d> ^distance ( - <r> 55) 
-         ^speed 10)
+         ^speed 30)
 }
+
+# apply drive to starting pose
+# sp {apply-drive-home
+#     (state <s> ^name drive-home
+#                ^superstate.range <r>
+#                ^superstate.io.ouput-link <ol>
+#               -^superstate.range < 55)
+#     # (<ol> -^drive-forward
+#     #        ^turn-in-place.status complete)
+# -->
+#     (write (crlf) |debug: apply driving towards home, range | <r>)
+#     (<s> ^operator <o> +)
+#     (<o> ^name drive
+#          ^actions <act>)
+#     (<act> ^drive-forward <d>)
+#     (<d> ^distance ( - <r> 55) 
+#          ^speed 10)
+# }
 
 sp {propose-drop-block
     (state <s> ^operator.name go-home

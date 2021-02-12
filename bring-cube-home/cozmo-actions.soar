@@ -27,13 +27,14 @@ sp {propose-turn-in-place
          ^actions <a>)
     (<a> ^turn-in-place <t>)
     (<t> ^angle 90
-         ^speed 30)
+         ^speed 45)
 }
 
 sp {apply-turn-in-place
     (state <s> ^operator.name turn-search
-               ^io.input-link.turn-in-place.status complete
+               ^io.output-link.turn-in-place.status complete
                ^turn-count <tc>)
 -->
+    (write |debug: apply turn in place|)
     (<s> ^turned <tc>)
 }

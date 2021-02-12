@@ -6,10 +6,11 @@ sp {elab-compute-pose
     (<op> ^x <o-x>
           ^y <o-y>)
     (<p> ^x <x>
-         ^y <y>)
+         ^y <y>
+         ^rot <r>)
 -->
     (write |debug: computing heading and range based on x: | <x> | y: | <y>)
-    (<s> ^heading (compute-heading <x> <y> <o-x> <o-y>)
+    (<s> ^heading (- (compute-heading <x> <y> <o-x> <o-y>) <r>)
          ^range (compute-range <x> <y> <o-x> <o-y>))
     # (write |heading | <s>.heading)
     # (write |heading | <s>.range)
