@@ -1,0 +1,41 @@
+# remember info about a cube
+sp {propose-remember-cube
+    (state <s> ^name stack-cube
+               ^io.input-link.object <obj>)
+    (<obj> ^cube-id <cid>
+           ^object-id <oid>
+           ^type led-cube
+           ^pose <p>)
+    (<p> ^x <px>
+         ^y <py>)
+    -(<s> ^cube.cube-id <cid>)
+-->
+    (<s> ^operator <o> + =)
+    (<o> ^name remember-cube
+         ^cube-id <cid>
+         ^object-id <oid>
+         ^pose <pose>)
+    (<pose> ^x <px>
+            ^y <py>)
+    (write |remembered cube | <cid>)
+}
+
+sp {apply-remember-cube
+    (state <s> ^operator <o>)
+    (<o> ^name remember-cube
+         ^cube-id <cid>
+         ^object-id <oid>
+         ^pose <p>)
+    (<p> ^x <px>
+         ^y <py>)
+-->
+    (<s> ^cube <c>)
+    (<c> ^cube-id <cid>
+         ^object-id <oid>
+         ^pose <pose>)
+    (<pose> ^x <px>
+            ^y <py>)
+    (write |added new cube to memory|)
+}
+
+# break operator ties when Cozmo sees two cubes ?

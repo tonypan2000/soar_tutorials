@@ -1,0 +1,61 @@
+# propose stack cube if Cozmo remebers seeing two cubes
+sp {propose-stack-cube
+    (state <s> ^name stack-cube
+               ^cube <c1>
+               ^cube {<> <c1> <c2>}
+              -^top
+              -^bottom)
+    (<c1> ^object-id <c1-oid>
+          ^cube-id <c1-cid>)
+    (<c2> ^object-id <c2-oid>
+          ^cube-id {< <c1-cid> <c2-cid>})
+-->
+    (<s> ^operator <o> + =)
+    (<o> ^name stack-order
+         ^top <c1>
+         ^bottom <c2>)
+    (<c1> ^cid <c1-cid>
+          ^oid <c1-oid>)
+    (<c2> ^cid <c2-cid>
+          ^oid <c2-oid>)
+    (write |propose stack | <c1-cid> | on top of | <c2-cid>)
+}
+
+sp {apply-stack-cube
+    (state <s> ^operator <o>)
+    (<o> ^name stack-order
+         ^top <c1>
+         ^bottom <c2>)
+    (<c1> ^cid <c1-cid>
+          ^oid <c1-oid>)
+    (<c2> ^cid <c2-cid>
+          ^oid <c2-oid>)
+--> 
+    (<s> ^top <c1>
+         ^bottom <c2>)
+    (write |stacking order set|)
+}
+
+# pick up top cube
+sp {propose-pickup-top-cube
+    (state <s> ^name stack-cube
+               ^top <oid>)
+-->
+    (<s> ^operator <o> +)
+    (<o> ^name pickup-top
+         ^actions.pick-up-object.object-id <oid>)
+    (write |pick up top cube |)
+}
+
+# turn to bottom cube
+sp {propose-turn-towards-bottom-cube
+    (state <s> ^name stack-cube
+               ^io.input-link.carrying-block 1)
+-->
+    # TODO: add elaboration to calculate pose
+    ()
+}
+
+# drive to bottom cube
+
+# drop top cube on bottom cube

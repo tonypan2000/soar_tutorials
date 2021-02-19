@@ -1,0 +1,27 @@
+sp {propose*initialize-stack-cube
+   (state <s> ^superstate nil
+             -^name)
+-->
+   (write |debug: propose initialize|)
+   (<s> ^operator <o> +)
+   (<o> ^name initialize-stack-cube
+        ^actions.move-lift <ml>
+        ^actions.move-head <mh>)
+   (<ml> ^height 0.0)
+   (<mh> ^angle 0.0)
+}
+
+# remember starting location, should be <0, 0>
+sp {apply*initialize-pickup-cube
+   (state <s> ^operator.name initialize-stack-cube
+              ^io.input-link.pose <p>)
+   # pose is a pointer to <p>
+   (<p> ^x <p-x>
+        ^y <p-y>)
+-->
+   (write |debug: apply initialize|)
+   (<s> ^name stack-cube
+        ^starting-location <p2>)
+   (<p2> ^x <p-x>
+         ^y <p-y>)
+}
