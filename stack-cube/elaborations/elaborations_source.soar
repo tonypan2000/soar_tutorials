@@ -1,2 +1,4 @@
 source _all.soar
 source top-state.soar
+source locations-elab.soar
+source general-action-elabs.soar

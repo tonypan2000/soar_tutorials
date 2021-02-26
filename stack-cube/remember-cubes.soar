@@ -39,3 +39,5 @@ sp {apply-remember-cube
 }
 
 # break operator ties when Cozmo sees two cubes ?
+
+# TODO: Update cube location if cube moved

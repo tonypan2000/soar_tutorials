@@ -39,7 +39,8 @@ sp {apply-stack-cube
 # pick up top cube
 sp {propose-pickup-top-cube
     (state <s> ^name stack-cube
-               ^top <oid>)
+               ^io.input-link.carrying-block 0
+               ^top.object-id <oid>)
 -->
     (<s> ^operator <o> +)
     (<o> ^name pickup-top
@@ -50,12 +51,35 @@ sp {propose-pickup-top-cube
 # turn to bottom cube
 sp {propose-turn-towards-bottom-cube
     (state <s> ^name stack-cube
-               ^io.input-link.carrying-block 1)
+               ^io.input-link.carrying-block 1
+               ^bottom.cube-id <cid>
+               ^cube <c>)
+    (<c> ^cube-id <cid>
+         ^heading <h>
+        -^heading { > -5 < 5 } )
 -->
     # TODO: add elaboration to calculate pose
-    ()
+    (<s> ^operator <o> +)
+    (<o> ^name turn-to-bottom
+         ^actions.turn-in-place <tip>)
+    (<tip> ^angle <h>
+           ^speed 30)
+    (write |turning | <h> | degrees toward bottom cube | <cid>)
 }
 
-# drive to bottom cube
+# TODO: drive to bottom cube if too far away
 
 # drop top cube on bottom cube
+sp {propose-place-top-cube
+    (state <s> ^name stack-cube
+               ^io.input-link.carrying-block 1
+               ^bottom.object-id <oid>
+               ^cube <c>)
+    (<c> ^object-id <oid>
+         ^heading { > -5 < 5 } )
+-->
+    (<s> ^operator <o> +)
+    (<o> ^name place-cube
+         ^actions.place-on-object.object-id <oid>)
+    (write |place top block on bottom one|)
+}

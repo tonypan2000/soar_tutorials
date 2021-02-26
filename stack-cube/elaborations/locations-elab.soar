@@ -1,0 +1,19 @@
+# Updates the current pose relative to a cube
+sp {elab-cube-location
+    (state <s> ^name stack-cube
+               ^io.input-link.pose <pr>
+               ^cube <c>)
+    (<c> ^pose <pc>
+         ^cube-id <cid>)
+    (<pc> ^x <pc-x>
+          ^y <pc-y>)
+    (<pr> ^x <pr-x>
+          ^y <pr-y>
+          ^rot <pr-r>)
+-->
+    # Flip the order of x and y when calculating heading to account for transformation
+    (<c> ^heading (- (compute-heading <pr-y> <pr-x> <pc-y> <pc-x>) <pr-r>)
+         ^distance (compute-range <pr-x> <pr-y> <pc-x> <pc-y>))
+    (write |heading to cube | <cid> |: | (- (compute-heading <pr-y> <pr-x> <pc-y> <pc-x>) <pr-r>))
+    (write |, distance: | (compute-range <pr-x> <pr-y> <pc-x> <pc-y>))
+}
