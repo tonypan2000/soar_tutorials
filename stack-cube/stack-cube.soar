@@ -1,3 +1,14 @@
+# Propose search cubes until Cozmo finds two cubes
+sp {propose-search-cubes
+    (state <s> ^name stack-cube
+               ^cube-count < 2)
+-->
+    (<s> ^operator <o> + <)
+    (<o> ^name search-cube)
+    (write |initialize turning for searching cube|)
+}
+
+
 # propose stack cube if Cozmo remebers seeing two cubes
 sp {propose-stack-cube
     (state <s> ^name stack-cube
@@ -82,4 +93,62 @@ sp {propose-place-top-cube
     (<o> ^name place-cube
          ^actions.place-on-object.object-id <oid>)
     (write |place top block on bottom one|)
+}
+
+
+# Propose drive home after finished stacking
+sp{propose-go-home-turn
+    (state <s> ^name stack-cube
+               ^io.output-link.place-on-object.status complete)
+-->
+    (write |debug: propose go home|)
+    (<s> ^operator <o> +)
+    (<o> ^name go-home)      
+}
+
+# Apply go home by driving back to starting pose and put down block
+sp {propose-turn-home
+    (state <s> ^name go-home
+               ^superstate.heading <h>
+              -^superstate.heading { > -5 < 5 } )
+-->
+    (write (crlf) |debug: apply turning towards home, heading | <h>)
+    (<s> ^operator <o> +)
+    (<o> ^name turn-home
+         ^actions <act>)
+    (<act> ^turn-in-place <t>)
+    (<t> ^angle <h>
+         ^speed 45)
+}
+
+sp {propose-drive-home
+    (state <s> ^name go-home
+    # check heading 
+               ^superstate.heading { > -5 < 5 }
+               ^superstate.range <r>)
+-->
+    (write (crlf) |debug: propose driving towards home|)
+    (<s> ^operator <o> +)
+    (<o> ^name drive
+         ^actions <act>)
+    (<act> ^drive-forward <d>)
+    (<d> ^distance ( - <r> 55) 
+         ^speed 30)
+}
+
+# Turn again to face starting pose
+sp {propose-drop-block
+    (state <s> ^operator.name go-home
+               ^superstate.heading { > -5 < 5 }
+               ^superstate.range < 55
+               ^superstate.starting-location.rot <sr>
+               ^superstate.io.input-link.pose.rot <pr>)
+-->
+    (write (crlf) |debug: propose drop block action|)
+    (<s> ^operator <o> +)
+    (<o> ^name turn-to-origin
+         ^actions <act>)
+    (<act> ^turn-in-place <t>)
+    (<t> ^angle (- <pr> <sr>)
+         ^speed 45)
 }

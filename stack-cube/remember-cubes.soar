@@ -1,7 +1,8 @@
-# remember info about a cube
+# Remember info about a cube if it has not been seen before
 sp {propose-remember-cube
     (state <s> ^name stack-cube
-               ^io.input-link.object <obj>)
+               ^io.input-link.object <obj>
+               ^cube-count <cc>)
     (<obj> ^cube-id <cid>
            ^object-id <oid>
            ^type led-cube
@@ -10,7 +11,8 @@ sp {propose-remember-cube
          ^y <py>)
     -(<s> ^cube.cube-id <cid>)
 -->
-    (<s> ^operator <o> + =)
+    (<s> ^operator <o> + =
+         ^cube-count (+ 1 <cc>))
     (<o> ^name remember-cube
          ^cube-id <cid>
          ^object-id <oid>

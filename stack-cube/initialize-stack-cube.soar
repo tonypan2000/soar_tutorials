@@ -17,11 +17,14 @@ sp {apply*initialize-pickup-cube
               ^io.input-link.pose <p>)
    # pose is a pointer to <p>
    (<p> ^x <p-x>
-        ^y <p-y>)
+        ^y <p-y>
+        ^rot <p-rot>)
 -->
    (write |debug: apply initialize|)
    (<s> ^name stack-cube
-        ^starting-location <p2>)
+        ^starting-location <p2>
+        ^cube-count 0)
    (<p2> ^x <p-x>
-         ^y <p-y>)
+         ^y <p-y>
+         ^rot <p-rot>)
 }

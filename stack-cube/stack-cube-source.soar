@@ -9,3 +9,4 @@ source initialize-stack-cube.soar
 source remember-cubes.soar
 source stack-cube.soar
 source wait.soar
+source search-cubes.soar
