@@ -1,6 +1,7 @@
 # Propose search cubes until Cozmo finds two cubes
 sp {propose-search-cubes
     (state <s> ^name stack-cube
+              -^operator.name search-cube
                ^cube-count < 2)
 -->
     (<s> ^operator <o> + <)

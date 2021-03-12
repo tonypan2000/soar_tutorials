@@ -11,12 +11,12 @@ sp {propose-remember-cube
          ^y <py>)
     -(<s> ^cube.cube-id <cid>)
 -->
-    (<s> ^operator <o> + =
-         ^cube-count (+ 1 <cc>))
+    (<s> ^operator <o> + =)
     (<o> ^name remember-cube
          ^cube-id <cid>
          ^object-id <oid>
-         ^pose <pose>)
+         ^pose <pose>
+         ^cube-count (+ 1 <cc>))
     (<pose> ^x <px>
             ^y <py>)
     (write |remembered cube | <cid>)
@@ -27,11 +27,13 @@ sp {apply-remember-cube
     (<o> ^name remember-cube
          ^cube-id <cid>
          ^object-id <oid>
-         ^pose <p>)
+         ^pose <p>
+         ^cube-count <cc>)
     (<p> ^x <px>
          ^y <py>)
 -->
-    (<s> ^cube <c>)
+    (<s> ^cube <c>
+         ^cube-count <cc>)
     (<c> ^cube-id <cid>
          ^object-id <oid>
          ^pose <pose>)
