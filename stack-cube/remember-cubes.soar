@@ -1,8 +1,7 @@
 # Remember info about a cube if it has not been seen before
 sp {propose-remember-cube
     (state <s> ^name stack-cube
-               ^io.input-link.object <obj>
-               ^cube-count <cc>)
+               ^io.input-link.object <obj>)
     (<obj> ^cube-id <cid>
            ^object-id <oid>
            ^type led-cube
@@ -15,25 +14,25 @@ sp {propose-remember-cube
     (<o> ^name remember-cube
          ^cube-id <cid>
          ^object-id <oid>
-         ^pose <pose>
-         ^cube-count (+ 1 <cc>))
+         ^pose <pose>)
     (<pose> ^x <px>
             ^y <py>)
     (write |remembered cube | <cid>)
 }
 
 sp {apply-remember-cube
-    (state <s> ^operator <o>)
+    (state <s> ^operator <o>
+               ^cube-count <cc>)
     (<o> ^name remember-cube
          ^cube-id <cid>
          ^object-id <oid>
-         ^pose <p>
-         ^cube-count <cc>)
+         ^pose <p>)
     (<p> ^x <px>
          ^y <py>)
 -->
     (<s> ^cube <c>
-         ^cube-count <cc>)
+         ^cube-count <cc> -
+                     (+ <cc> 1))
     (<c> ^cube-id <cid>
          ^object-id <oid>
          ^pose <pose>)
@@ -42,6 +41,15 @@ sp {apply-remember-cube
     (write |added new cube to memory|)
 }
 
-# break operator ties when Cozmo sees two cubes ?
+# break operator ties so remember cube has the highest priority
+sp {cube-stack*compare*remember-cube
+   (state <s> ^name stack-cube
+              ^operator <op1> +
+                        <op2> +)
+   (<op1> ^name remember-cube)
+   (<op2> ^name <> remember-cube)
+-->
+   (<s> ^operator <op1> > <op2>)
+}
 
 # TODO: Update cube location if cube moved

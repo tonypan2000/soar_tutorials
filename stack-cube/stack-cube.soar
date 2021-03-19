@@ -2,13 +2,12 @@
 sp {propose-search-cubes
     (state <s> ^name stack-cube
               -^operator.name search-cube
-               ^cube-count < 2)
+               ^cube-count { > -1 < 2 })
 -->
-    (<s> ^operator <o> + <)
+    (<s> ^operator <o> +)
     (<o> ^name search-cube)
     (write |initialize turning for searching cube|)
 }
-
 
 # propose stack cube if Cozmo remebers seeing two cubes
 sp {propose-stack-cube
