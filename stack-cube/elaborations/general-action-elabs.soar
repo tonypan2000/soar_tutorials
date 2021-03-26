@@ -1,15 +1,25 @@
-sp {apply*operator*create-action-command
+sp {apply*operator*create-action-command1
    (state <s> ^operator <o>
               ^io.output-link <out>
              -^io.output-link.<old-act>.status running)
    (<o> ^actions <act>)
-   (<act> ^<att> <value>)
-   # (<value> ^<att2> <value2>)
+   (<act> ^{ <att> << turn-in-place >> } <value>)
 -->
-   # want copy of pointer to structure instead of values
-   # (<out> ^<att> <value3>)
-   # (<value3> ^<att2> <value2>)
+   # actions with multiple attributes (use copy of pointer to structure)
    (<out> ^<att> <value>)
+}
+
+sp {apply*operator*create-action-command2
+   (state <s> ^operator <o>
+              ^io.output-link <out>
+             -^io.output-link.<old-act>.status running)
+   (<o> ^actions <act>)
+   (<act> ^{ <att> << move-lift move-head pick-up-object place-on-object >> } <value>)
+   (<value> ^<att2> <value2>)
+-->
+   # actions with 1 attribute (copy value directly)
+   (<out> ^<att> <value3>)
+   (<value3> ^<att2> <value2>)
 }
 
 sp {apply*operator*remove-command
@@ -20,7 +30,7 @@ sp {apply*operator*remove-command
 -->
    (write (crlf) | REMOVE OPERATOR: | <att>)
    (<out> ^<att> <value> -)
-   }
+}
 
 sp {elaborate*state*io
    (state <s> ^superstate.io <io>)

@@ -7,6 +7,6 @@ source elaborations_source.soar
 popd
 source initialize-stack-cube.soar
 source remember-cubes.soar
+source search-cubes.soar
 source stack-cube.soar
 source wait.soar
-source search-cubes.soar

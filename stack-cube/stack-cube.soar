@@ -1,10 +1,9 @@
 # Propose search cubes until Cozmo finds two cubes
 sp {propose-search-cubes
     (state <s> ^name stack-cube
-              -^operator.name search-cube
-               ^cube-count { > -1 < 2 })
+               ^cube-count << 0 1 >> )
 -->
-    (<s> ^operator <o> +)
+    (<s> ^operator <o> + =)
     (<o> ^name search-cube)
     (write |initialize turning for searching cube|)
 }
@@ -42,6 +41,7 @@ sp {apply-stack-cube
     (<c2> ^cid <c2-cid>
           ^oid <c2-oid>)
 --> 
+    # There may b
     (<s> ^top <c1>
          ^bottom <c2>)
     (write |stacking order set|)
@@ -53,7 +53,7 @@ sp {propose-pickup-top-cube
                ^io.input-link.carrying-block 0
                ^top.object-id <oid>)
 -->
-    (<s> ^operator <o> +)
+    (<s> ^operator <o> + =)
     (<o> ^name pickup-top
          ^actions.pick-up-object.object-id <oid>)
     (write |pick up top cube |)
@@ -97,7 +97,7 @@ sp {propose-place-top-cube
 
 
 # Propose drive home after finished stacking
-sp{propose-go-home-turn
+sp {propose-go-home-turn
     (state <s> ^name stack-cube
                ^io.output-link.place-on-object.status complete)
 -->
