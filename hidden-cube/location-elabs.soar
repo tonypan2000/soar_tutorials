@@ -1,0 +1,39 @@
+sp {hidden-cube*elaborate*dist-from-origin
+   (state <s> ^name hidden-cube
+              ^origin-pose <o-pose>
+              ^io.input-link.pose <pose>)
+   (<o-pose> ^rot <o-rot>
+             ^x <o-x>
+             ^y <o-y>
+             ^z <o-z>)
+   (<pose> ^rot <rot>
+           ^x <x>
+           ^y <y>
+           ^z <z>)
+-->
+   (<s> ^origin-dist (compute-range <x> <y> <o-x> <o-y>)
+        ^origin-hd (compute-heading <x> <y> <o-x> <o-y>))
+}
+
+sp {hidden-cube*elab*dist-from-wall
+   (state <s> ^name hidden-cube
+              ^io.input-link.pose <pose>
+              ^wall <w>)
+   (<pose> ^x <r-x>
+           ^y <r-y>
+           ^rot <r-rot>)
+   (<w> ^pose <w-pose>)
+   (<w-pose> ^x <w-x>
+             ^y <w-y>)
+-->
+   (<w> ^heading (- (compute-heading <r-y> <r-x> <w-y> <w-x>) <r-rot>)
+        ^distance (compute-range <r-y> <r-x> <w-y> <w-x>))
+}
+
+sp {hidden-cube*elaborate*abs-heading
+   (state <s> ^name hidden-cube
+              ^wall <w>)
+   (<w> ^heading <h>)
+-->
+   (<w> ^abs-heading (abs <h>))
+}

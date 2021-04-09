@@ -1,0 +1,77 @@
+# Remember seeing a wall
+sp {hidden-cube*propose*remeber-wall
+   (state <s> ^name hidden-cube
+              ^io.input-link.object <obj>
+             -^wall)
+   (<obj> ^name wall
+          ^pose <p>)
+   (<p> ^rot <rot>
+        ^x <x-val>
+        ^y <y-val>
+        ^z <z-val>)
+-->
+   (<s> ^operator <o> + =)
+    (<o> ^name remember-wall
+         ^pose <pose>)
+    (<pose> ^rot <rot>
+        ^x <x-val>
+        ^y <y-val>
+        ^z <z-val>)
+}
+
+sp {hidden-cube*apply*remeber-wall
+   (state <s> ^operator <o>
+             -^wall)
+   (<o> ^name remember-wall
+        ^pose <p>)
+   (<p> ^rot <rot>
+        ^x <x-val>
+        ^y <y-val>
+        ^z <z-val>)
+-->
+   (<s> ^wall <w>)
+   (<w> ^pose <pw>)
+   (<pw> ^rot <rot>
+         ^x <x-val>
+         ^y <y-val>
+         ^z <z-val>)
+}
+
+# If Cozmo sees a wall, propose going around the wall
+sp {hidden-cube*propose*go-around-wall
+   (state <s> ^name hidden-cube
+              ^wall <w>)
+-->
+   (write |sees a wall, propose going around|)
+   (<s> ^operator <o> + =)
+   (<o> ^name go-around)
+}
+
+# Turn away from wall
+sp {hidden-cube*propose*turn-away
+   (state <s> ^name go-around
+              ^superstate.wall.heading <h>
+             -^superstate.wall.abs-heading { > 40 < 50 })
+-->
+   (write |propose turning|)
+   (<s> ^operator <o> +)
+   (<o> ^name turn-around
+        ^actions.turn-in-place <tip>)
+   (<tip> ^angle (+ <h> 45)
+          ^speed 45)
+}
+
+# Drive away from wall
+sp {hidden-cube*propose-drive-away
+    (state <s> ^name go-around
+               ^superstate.wall.abs-heading { > 40 < 50 }
+               ^superstate.wall.distance <d>)
+-->
+    (write (crlf) |propose driving away from wall|)
+    (<s> ^operator <o> +)
+    (<o> ^name drive-away
+         ^actions <act>)
+    (<act> ^drive-forward <df>)
+    (<df> ^distance (- (* <d> 2) 55) 
+          ^speed 45)
+}
