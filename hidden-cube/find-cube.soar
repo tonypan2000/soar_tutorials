@@ -40,7 +40,8 @@ sp {hidden-cube*apply*remeber-wall
 # If Cozmo sees a wall, propose going around the wall
 sp {hidden-cube*propose*go-around-wall
    (state <s> ^name hidden-cube
-              ^wall <w>)
+              ^wall <w>
+             -^crossed)
 -->
    (write |sees a wall, propose going around|)
    (<s> ^operator <o> + =)
@@ -51,7 +52,8 @@ sp {hidden-cube*propose*go-around-wall
 sp {hidden-cube*propose*turn-away
    (state <s> ^name go-around
               ^superstate.wall.heading <h>
-             -^superstate.wall.abs-heading { > 40 < 50 })
+             -^superstate.wall.abs-heading { > 40 < 50 }
+             -^superstate.crossed)
 -->
    (write |propose turning|)
    (<s> ^operator <o> +)
@@ -62,10 +64,11 @@ sp {hidden-cube*propose*turn-away
 }
 
 # Drive away from wall
-sp {hidden-cube*propose-drive-away
+sp {hidden-cube*propose*drive-away
     (state <s> ^name go-around
                ^superstate.wall.abs-heading { > 40 < 50 }
-               ^superstate.wall.distance <d>)
+               ^superstate.wall.distance <d>
+              -^superstate.crossed)
 -->
     (write (crlf) |propose driving away from wall|)
     (<s> ^operator <o> +)
@@ -73,5 +76,114 @@ sp {hidden-cube*propose-drive-away
          ^actions <act>)
     (<act> ^drive-forward <df>)
     (<df> ^distance (- (* <d> 2) 55) 
+          ^speed 100)
+}
+
+sp {hidden-cube*apply*drive-away
+    (state <s> ^operator.name go-around
+               ^io.output-link.drive-forward.status complete)
+-->
+    (write |debug: apply drive away|)
+    (<s> ^crossed 1
+         ^operator <o> -)
+     (<o> ^name go-around)
+}
+
+# Propose search cubes
+sp {hidden-cube*propose-search-cubes
+    (state <s> ^name hidden-cube
+              -^cube
+              -^returned
+               ^crossed 1)
+-->
+    (<s> ^operator <o> + =)
+    (<o> ^name search-cube)
+    (write |initialize turning for searching cube|)
+}
+
+# Pick up cube
+sp {hidden-cube*propose*pick-up-cube
+     (state <s> ^name hidden-cube
+                ^cube.object-id <oid>)
+-->
+     (write |propose pick up cube|)
+     (<s> ^operator <o> + =)
+     (<o> ^name pick-up
+          ^actions.pick-up-object.object-id <oid>)
+}
+
+# Propose going around the wall after getting the cube
+sp {hidden-cube*propose*go-back
+   (state <s> ^name hidden-cube
+              ^crossed 1
+             -^returned
+              ^io.input-link.carrying-block 1)
+-->
+   (write |have the cube, propose going around|)
+   (<s> ^operator <o> + =)
+   (<o> ^name go-back)
+}
+
+# Turn away from wall
+sp {hidden-cube*propose*go-back-turn
+   (state <s> ^name go-back
+              ^superstate.crossed 1
+              ^superstate.wall.heading <h>
+             -^superstate.wall.abs-heading { > 220 < 230 }
+             -^superstate.returned)
+-->
+   (write |propose turning|)
+   (<s> ^operator <o> +)
+   (<o> ^name turn-back
+        ^actions.turn-in-place <tip>)
+   (<tip> ^angle 10
+          ^speed 45)
+}
+
+# Drive away from wall
+sp {hidden-cube*propose*drive-back
+    (state <s> ^name go-back
+               ^superstate.crossed 1
+              -^superstate.returned
+               ^superstate.wall.abs-heading { > 220 < 230 }
+               ^superstate.wall.distance <d>)
+-->
+    (write (crlf) |propose driving back around the wall|)
+    (<s> ^operator <o> +
+         ^superstate.returned 1)
+    (<o> ^name drive-away
+         ^actions <act>)
+    (<act> ^drive-forward <df>)
+    (<df> ^distance (- (* <d> 2) 55) 
+          ^speed 60)
+}
+
+# Turn towards original pose
+sp {hidden-cube*propose*turn-towards-origin
+   (state <s> ^name go-back
+              ^superstate.returned 1
+             -^superstate.origin-hd { > -5 < 5 })
+-->
+   (write |propose turning|)
+   (<s> ^operator <o> +)
+   (<o> ^name turn-around
+        ^actions.turn-in-place <tip>)
+   (<tip> ^angle 10
+          ^speed 45)
+}
+
+# Drive to original position
+sp {hidden-cube*propose*drive-towards-origin
+    (state <s> ^name go-back
+               ^superstate.returned 1
+              -^superstate.origin-hd { > -5 < 5 }
+               ^superstate.origin-dist <d>)
+-->
+    (write (crlf) |propose driving towards origin|)
+    (<s> ^operator <o> +)
+    (<o> ^name drive-away
+         ^actions <act>)
+    (<act> ^drive-forward <df>)
+    (<df> ^distance <d> 
           ^speed 45)
 }

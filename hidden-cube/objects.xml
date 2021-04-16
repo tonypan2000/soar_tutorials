@@ -1,9 +1,0 @@
-<?xml version="1.0" ?>
-<objects>
-    <wall unique="false">
-        <name>wall</name>
-        <marker width="50" height="50">Circles5</marker>
-        <width>150</width>
-        <height>300</height>
-    </wall>
-</objects>

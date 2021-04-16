@@ -1,0 +1,50 @@
+# Remember info about a cube if it has not been seen before
+sp {propose-remember-cube
+    (state <s> ^name hidden-cube
+               ^io.input-link.object <obj>)
+    (<obj> ^cube-id <cid>
+           ^object-id <oid>
+           ^type led-cube
+           ^pose <p>)
+    (<p> ^x <px>
+         ^y <py>)
+    -(<s> ^cube.cube-id <cid>)
+-->
+    (<s> ^operator <o> + =)
+    (<o> ^name remember-cube
+         ^cube-id <cid>
+         ^object-id <oid>
+         ^pose <pose>)
+    (<pose> ^x <px>
+            ^y <py>)
+    (write |remembered cube | <cid>)
+}
+
+sp {apply-remember-cube
+    (state <s> ^operator <o>)
+    (<o> ^name remember-cube
+         ^cube-id <cid>
+         ^object-id <oid>
+         ^pose <p>)
+    (<p> ^x <px>
+         ^y <py>)
+-->
+    (<s> ^cube <c>)
+    (<c> ^cube-id <cid>
+         ^object-id <oid>
+         ^pose <pose>)
+    (<pose> ^x <px>
+            ^y <py>)
+    (write |added new cube to memory|)
+}
+
+# break operator ties so remember cube has the highest priority
+sp {hidden-cube*compare*remember-cube
+   (state <s> ^name hidden-cube
+              ^operator <op1> +
+                        <op2> +)
+   (<op1> ^name remember-cube)
+   (<op2> ^name {<> remember-new-cube <> save-origin-pose })
+-->
+   (<s> ^operator <op1> > <op2>)
+}

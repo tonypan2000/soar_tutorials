@@ -14,7 +14,7 @@ sp {apply*operator*create-action-command2
               ^io.output-link <out>
              -^io.output-link.<old-act>.status running)
    (<o> ^actions <act>)
-   (<act> ^{ <att> << move-lift move-head >> } <value>)
+   (<act> ^{ <att> << move-lift move-head pick-up-object >> } <value>)
    (<value> ^<att2> <value2>)
 -->
    # actions with 1 attribute (copy value directly)

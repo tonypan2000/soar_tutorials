@@ -9,3 +9,5 @@ source initialize-hidden-cube.soar
 source location-elabs.soar
 source find-cube.soar
 source wait.soar
+source search-cube.soar
+source remember-cube.soar
