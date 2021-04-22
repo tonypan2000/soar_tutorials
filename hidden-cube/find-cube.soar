@@ -104,7 +104,8 @@ sp {hidden-cube*propose-search-cubes
 # Pick up cube
 sp {hidden-cube*propose*pick-up-cube
      (state <s> ^name hidden-cube
-                ^cube.object-id <oid>)
+                ^cube.object-id <oid>
+                ^io.input-link.carrying-block 0)
 -->
      (write |propose pick up cube|)
      (<s> ^operator <o> + =)
@@ -129,15 +130,15 @@ sp {hidden-cube*propose*go-back-turn
    (state <s> ^name go-back
               ^superstate.crossed 1
               ^superstate.wall.heading <h>
-             -^superstate.wall.abs-heading { > 220 < 230 }
+             -^superstate.wall.abs-heading { > 250 < 280 }
              -^superstate.returned)
 -->
    (write |propose turning|)
    (<s> ^operator <o> +)
    (<o> ^name turn-back
         ^actions.turn-in-place <tip>)
-   (<tip> ^angle 10
-          ^speed 45)
+   (<tip> ^angle 30
+          ^speed 60)
 }
 
 # Drive away from wall
@@ -145,28 +146,46 @@ sp {hidden-cube*propose*drive-back
     (state <s> ^name go-back
                ^superstate.crossed 1
               -^superstate.returned
-               ^superstate.wall.abs-heading { > 220 < 230 }
+               ^superstate.wall.abs-heading { > 250 < 280 }
                ^superstate.wall.distance <d>)
 -->
     (write (crlf) |propose driving back around the wall|)
-    (<s> ^operator <o> +
-         ^superstate.returned 1)
+    (<s> ^operator <o> +)
     (<o> ^name drive-away
          ^actions <act>)
     (<act> ^drive-forward <df>)
     (<df> ^distance (- (* <d> 2) 55) 
-          ^speed 60)
+          ^speed 100)
+}
+
+sp {hidden-cube*apply*drive-back
+    (state <s> ^operator.name go-back
+               ^io.output-link.drive-forward.status complete)
+-->
+    (write |debug: apply drive back|)
+    (<s> ^returned 1
+         ^operator <o> -)
+     (<o> ^name go-back)
+}
+
+sp {hidden-cube*propose*go-home
+   (state <s> ^name hidden-cube
+              ^returned 1
+             -^home)
+-->
+   (write |crossed the wall, drive to origin pose|)
+   (<s> ^operator <o> + =)
+   (<o> ^name go-home)
 }
 
 # Turn towards original pose
 sp {hidden-cube*propose*turn-towards-origin
-   (state <s> ^name go-back
-              ^superstate.returned 1
+   (state <s> ^name go-home
              -^superstate.origin-hd { > -5 < 5 })
 -->
    (write |propose turning|)
    (<s> ^operator <o> +)
-   (<o> ^name turn-around
+   (<o> ^name turn-home
         ^actions.turn-in-place <tip>)
    (<tip> ^angle 10
           ^speed 45)
@@ -174,16 +193,25 @@ sp {hidden-cube*propose*turn-towards-origin
 
 # Drive to original position
 sp {hidden-cube*propose*drive-towards-origin
-    (state <s> ^name go-back
-               ^superstate.returned 1
-              -^superstate.origin-hd { > -5 < 5 }
+    (state <s> ^name go-home
+               ^superstate.origin-hd { > -5 < 5 }
                ^superstate.origin-dist <d>)
 -->
     (write (crlf) |propose driving towards origin|)
     (<s> ^operator <o> +)
-    (<o> ^name drive-away
+    (<o> ^name drive-home
          ^actions <act>)
     (<act> ^drive-forward <df>)
     (<df> ^distance <d> 
           ^speed 45)
+}
+
+sp {hidden-cube*apply*drive-home
+    (state <s> ^operator.name go-home
+               ^superstate.origin-dist { > -5 < 5 })
+-->
+    (write |debug: program finished|)
+    (<s> ^home 1
+         ^operator <o> -)
+     (<o> ^name go-home)
 }
